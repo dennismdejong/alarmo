@@ -135,6 +135,15 @@ class AutomationHandler:
                         and validate_modes(trigger, alarm_entity._arm_mode)
                         and validate_trigger(trigger, new_state, old_state)
                     ):
+                        if (
+                            area_id
+                            and self.hass.data[const.DOMAIN]["master"]
+                            and any(
+                                not t.get(const.ATTR_AREA)
+                                for t in config[const.ATTR_TRIGGERS]
+                            )
+                        ):
+                            continue
                         await self.async_execute_automation(automation_id, alarm_entity)
 
         self._subscriptions.append(
